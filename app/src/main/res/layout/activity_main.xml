@@ -39,19 +39,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-        <Button
+        <ImageButton
             android:id="@+id/prev_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/prev_button"
-            android:drawableLeft="@drawable/arrow_left"
-            android:drawablePadding="4dp" />
-        <Button
+            android:drawablePadding="4dp"
+            android:src="@drawable/arrow_left"
+            android:contentDescription="Previous question."/>
+        <ImageButton
             android:id="@+id/next_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/next_button"
-            android:drawableEnd="@drawable/arrow_right"
-            android:drawablePadding="4dp" />
+            android:drawablePadding="4dp"
+            android:src="@drawable/arrow_right"
+            android:contentDescription="Next question."/>
     </LinearLayout>
 </LinearLayout>
