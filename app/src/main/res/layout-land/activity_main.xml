@@ -37,7 +37,7 @@
         android:contentDescription="Previous question."
         android:drawablePadding="4dp"
         android:src="@drawable/arrow_left"
-        android:layout_gravity="bottom|left" />
+        android:layout_gravity="bottom|start" />
 
     <ImageButton
         android:id="@+id/next_button"
@@ -46,6 +46,6 @@
         android:contentDescription="Next question."
         android:drawablePadding="4dp"
         android:src="@drawable/arrow_right"
-        android:layout_gravity="bottom|right" />
+        android:layout_gravity="bottom|end" />
 
 </FrameLayout>

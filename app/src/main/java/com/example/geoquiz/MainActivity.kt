@@ -8,8 +8,11 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 
 private const val TAG = "MainActivity"
+private const val KEY_INDEX = "index"
 class MainActivity : AppCompatActivity() {
     private lateinit var trueButton: Button
     private lateinit var falseButton: Button
@@ -25,40 +28,40 @@ class MainActivity : AppCompatActivity() {
         Question(R.string.question_americas, true, false),
         Question(R.string.question_asia, true, false),
     )
-    private var currentIndex = 0
-    private var amountRightAnswers = 0
-    private var amountAllAnswers = 0
+
+    private val quizViewModel: QuizViewModel by lazy {
+        ViewModelProviders.of(this).get(QuizViewModel::class.java)
+    }
 
     private fun updateQuestion() {
-        val questionTextResId = questionBank[currentIndex].textResId
+        val questionTextResId = quizViewModel.currentQuestionText
         questionTextView.setText(questionTextResId)
     }
 
     private fun checkAnswer(userAnswer: Boolean) {
-        if(questionBank[currentIndex].answered) {
+        if(quizViewModel.currentQuestionAnswered) {
             toastShow(R.string.question_answered)
             return
         }
 
-        questionBank[currentIndex].answered = true
-        val correctAnswer = questionBank[currentIndex].answer
-        amountAllAnswers++
+        quizViewModel.makeQuestionAnswered()
+        quizViewModel.amountAllAnswers++
+        val correctAnswer = quizViewModel.currentQuestionAnswer
 
 
 
         val messageResId = if (userAnswer == correctAnswer) {
-            amountRightAnswers++
+            quizViewModel.amountRightAnswers++
             R.string.correct_toast
         } else {
             R.string.incorrect_toast
         }
         toastShow(messageResId)
 
-        if(amountAllAnswers == questionBank.size) {
-            toastShow("Congratulations! Your score: ${amountRightAnswers}/${amountAllAnswers}.")
-            amountRightAnswers = 0
-            amountAllAnswers = 0
-            questionBank.forEach { question -> question.answered = false }
+        if(quizViewModel.amountAllAnswers == quizViewModel.amountAllQuestions) {
+            toastShow(
+                "Congratulations! Your score: ${quizViewModel.amountRightAnswers}/${quizViewModel.amountAllAnswers}.")
+            quizViewModel.resetQuestions()
         }
     }
 
@@ -83,14 +86,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun nextQuestion() {
-        currentIndex = (currentIndex + 1) % questionBank.size
+        quizViewModel.moveToNext()
         updateQuestion()
     }
 
     private fun prevQuestion() {
-        currentIndex--
-        if(currentIndex < 0)
-            currentIndex = questionBank.size - 1
+        quizViewModel.moveToPrev()
         updateQuestion()
     }
 
@@ -98,6 +99,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "onCreate(Bundle?) called")
         setContentView(R.layout.activity_main)
+
+        val currentIndex = savedInstanceState?.getInt(KEY_INDEX, 0) ?: 0
+        quizViewModel.currentIndex = currentIndex
 
         questionTextView = findViewById(R.id.question_text_view)
         questionTextView.setOnClickListener {
@@ -150,5 +154,11 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         Log.d(TAG, "onDestroy() called")
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        Log.i(TAG, "onSaveInstanceState")
+        outState.putInt(KEY_INDEX, quizViewModel.currentIndex)
     }
 }
