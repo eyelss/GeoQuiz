@@ -30,25 +30,22 @@
             android:text="@string/false_button" />
     </LinearLayout>
 
-    <LinearLayout
+    <ImageButton
+        android:id="@+id/prev_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical|center_horizontal">
+        android:contentDescription="Previous question."
+        android:drawablePadding="4dp"
+        android:src="@drawable/arrow_left"
+        android:layout_gravity="bottom|left" />
 
-        <ImageButton
-            android:id="@+id/prev_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="Previous question."
-            android:drawablePadding="4dp"
-            android:src="@drawable/arrow_left" />
+    <ImageButton
+        android:id="@+id/next_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="Next question."
+        android:drawablePadding="4dp"
+        android:src="@drawable/arrow_right"
+        android:layout_gravity="bottom|right" />
 
-        <ImageButton
-            android:id="@+id/next_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="Next question."
-            android:drawablePadding="4dp"
-            android:src="@drawable/arrow_right" />
-    </LinearLayout>
 </FrameLayout>

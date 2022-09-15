@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
-import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
@@ -35,18 +34,21 @@ class MainActivity : AppCompatActivity() {
         questionTextView.setText(questionTextResId)
     }
 
-    private fun checkAnswer(userAnwser: Boolean) {
-        if(questionBank[currentIndex].anwsered) {
+    private fun checkAnswer(userAnswer: Boolean) {
+        if(questionBank[currentIndex].answered) {
             toastShow(R.string.question_answered)
             return
         }
 
-        questionBank[currentIndex].anwsered = true
-        val correctAnwser = questionBank[currentIndex].answer
+        questionBank[currentIndex].answered = true
+        val correctAnswer = questionBank[currentIndex].answer
         amountAllAnswers++
-        val messageResId = if (userAnwser == correctAnwser) {
-            R.string.correct_toast
+
+
+
+        val messageResId = if (userAnswer == correctAnswer) {
             amountRightAnswers++
+            R.string.correct_toast
         } else {
             R.string.incorrect_toast
         }
@@ -56,7 +58,7 @@ class MainActivity : AppCompatActivity() {
             toastShow("Congratulations! Your score: ${amountRightAnswers}/${amountAllAnswers}.")
             amountRightAnswers = 0
             amountAllAnswers = 0
-            questionBank.forEach { question -> question.anwsered = false }
+            questionBank.forEach { question -> question.answered = false }
         }
     }
 
