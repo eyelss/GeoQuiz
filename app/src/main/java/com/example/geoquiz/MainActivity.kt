@@ -1,7 +1,11 @@
 package com.example.geoquiz
 
+import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.ActivityOptions
 import android.content.Intent
+import android.graphics.Color
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -58,6 +62,7 @@ class MainActivity : AppCompatActivity() {
             toastShow(
                 "Congratulations! Your score: ${quizViewModel.amountRightAnswers}/${quizViewModel.amountAllAnswers}.")
             quizViewModel.resetQuestions()
+            enableCheatButton()
         }
     }
 
@@ -91,6 +96,7 @@ class MainActivity : AppCompatActivity() {
         updateQuestion()
     }
 
+    @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "onCreate(Bundle?) called")
@@ -125,10 +131,18 @@ class MainActivity : AppCompatActivity() {
         }
 
         cheatButton = findViewById(R.id.cheat_button)
-        cheatButton.setOnClickListener {
+        cheatButton.setOnClickListener { view ->
             val answerIsTrue = quizViewModel.currentQuestionAnswer
             val intent = CheatActivity.newIntent(this@MainActivity, answerIsTrue)
-            startActivityForResult(intent, REQUEST_CODE_CHEAT)
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                val options =
+                    ActivityOptions.makeClipRevealAnimation(view, 0, 0, view.width, view.height)
+                startActivityForResult(intent, REQUEST_CODE_CHEAT)
+//                startActivityForResult(intent, REQUEST_CODE_CHEAT, options.toBundle())
+            } else {
+                startActivityForResult(intent, REQUEST_CODE_CHEAT)
+            }
         }
 
         updateQuestion()
@@ -146,9 +160,26 @@ class MainActivity : AppCompatActivity() {
             return
         }
         if (requestCode == REQUEST_CODE_CHEAT) {
-            val r = data?.getBooleanExtra(EXTRA_ANSWER_SHOWN, false) ?: false
-            if (r)
+            val result = data?.getBooleanExtra(EXTRA_ANSWER_SHOWN, false) ?: false
+            if (result) {
                 quizViewModel.makeQuestionCheated()
+                quizViewModel.tipsCount++
+                if (!quizViewModel.catTakeTip()) {
+                    disableCheatButton()
+                }
+            }
         }
+    }
+
+    private fun disableCheatButton() {
+//        cheatButton.setBackgroundColor(Color.GRAY)
+        cheatButton.isEnabled = false
+        cheatButton.isClickable = false
+    }
+
+    private fun enableCheatButton() {
+//        cheatButton.setBackgroundColor(Colors.Pr)
+        cheatButton.isEnabled = true
+        cheatButton.isClickable = true
     }
 }

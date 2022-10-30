@@ -3,6 +3,7 @@ package com.example.geoquiz
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -16,6 +17,7 @@ private const val TAG = "CheatActivity"
 class CheatActivity : AppCompatActivity() {
     private lateinit var answerTextView: TextView
     private lateinit var showAnswerButton: Button
+    private lateinit var sdkVerTextView: TextView
 
     private var answerIsTrue = false
 
@@ -32,9 +34,12 @@ class CheatActivity : AppCompatActivity() {
 
         showAnswerButton = findViewById(R.id.show_answer_button)
         showAnswerButton.setOnClickListener {
-            allOut()
             cheatViewModel.isCheated = true
+            allOut()
         }
+
+        sdkVerTextView = findViewById(R.id.sdk_version_text_view)
+        sdkVerTextView.setText("API level: ${Build.VERSION.SDK_INT}")
 
         if (cheatViewModel.isCheated) {
             allOut()
