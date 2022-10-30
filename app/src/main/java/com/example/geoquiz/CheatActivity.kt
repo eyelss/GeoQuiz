@@ -8,8 +8,10 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
-private const val EXTRA_ANSWER_IS_TRUE = "com.example.geoquiz.answer_is_true"
+import androidx.lifecycle.ViewModelProviders
+
 const val EXTRA_ANSWER_SHOWN = "com.example.geoquiz.answer_shown"
+private const val EXTRA_ANSWER_IS_TRUE = "com.example.geoquiz.answer_is_true"
 private const val TAG = "CheatActivity"
 class CheatActivity : AppCompatActivity() {
     private lateinit var answerTextView: TextView
@@ -17,24 +19,35 @@ class CheatActivity : AppCompatActivity() {
 
     private var answerIsTrue = false
 
+    private val cheatViewModel: CheatViewModel by lazy {
+        ViewModelProviders.of(this).get(CheatViewModel::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cheat)
-        intent.getBooleanExtra(EXTRA_ANSWER_IS_TRUE, false)
 
         answerIsTrue = intent.getBooleanExtra(EXTRA_ANSWER_IS_TRUE, false)
         answerTextView = findViewById(R.id.answer_text_view)
 
         showAnswerButton = findViewById(R.id.show_answer_button)
         showAnswerButton.setOnClickListener {
-            val answerText = when {
-                answerIsTrue -> R.string.true_button
-                else -> R.string.false_button
-            }
-            answerTextView.setText(answerText)
-            setAnswerShownResult(true)
+            allOut()
+            cheatViewModel.isCheated = true
         }
+
+        if (cheatViewModel.isCheated) {
+            allOut()
+        }
+    }
+
+    private fun allOut() {
+        val answerText = when {
+            answerIsTrue -> R.string.true_button
+            else -> R.string.false_button
+        }
+        answerTextView.setText(answerText)
+        setAnswerShownResult(true)
     }
 
     private fun setAnswerShownResult(isAnswerShown: Boolean) {
@@ -50,30 +63,5 @@ class CheatActivity : AppCompatActivity() {
                 putExtra(EXTRA_ANSWER_IS_TRUE, answerIsTrue)
             }
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        Log.d(TAG, "onStart() called")
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Log.d(TAG, "onResume() called")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        Log.d(TAG, "onPause() called")
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Log.d(TAG, "onStop() called")
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.d(TAG, "onDestroy() called")
     }
 }
