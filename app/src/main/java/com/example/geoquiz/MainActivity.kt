@@ -164,7 +164,7 @@ class MainActivity : AppCompatActivity() {
             if (result) {
                 quizViewModel.makeQuestionCheated()
                 quizViewModel.tipsCount++
-                if (!quizViewModel.catTakeTip()) {
+                if (!quizViewModel.canTakeTip()) {
                     disableCheatButton()
                 }
             }

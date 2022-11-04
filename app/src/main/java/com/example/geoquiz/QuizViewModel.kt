@@ -59,7 +59,7 @@ class QuizViewModel : ViewModel() {
     private val maxTips: UInt = 3u
     var tipsCount: UInt = 0u
 
-    fun catTakeTip(): Boolean {
+    fun canTakeTip(): Boolean {
         return tipsCount < maxTips
     }
 }
